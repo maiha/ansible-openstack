@@ -1,0 +1,9 @@
+[ubuntu]
+maiha-fo-ubuntu
+maiha-fb-ubuntu
+maiha-tw-ubuntu
+maiha-aw-ubuntu
+
+[ubuntu:vars]
+ansible_ssh_user=ubuntu
+ansible_python_interpreter=/usr/bin/python3

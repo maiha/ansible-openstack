@@ -1,0 +1,20 @@
+---
+# [目的]
+#   ubuntuにパッケージを色々入れる
+# [条件]
+#   Ubuntu16.04
+
+- hosts: ubuntu
+  become: yes
+  gather_facts: False
+
+  tasks:
+    - name: add-apt-repository ppa:git-core/ppa -y
+      raw:  add-apt-repository ppa:git-core/ppa -y
+
+    - name: apt-get update && apt-get upgrade -y
+      raw:  apt-get update && apt-get upgrade -y
+
+    - name: apt-get install packages...
+      raw:  apt-get install tig jq htop git -y
+
