@@ -3,6 +3,9 @@ maiha-fo-ubuntu
 maiha-fb-ubuntu
 maiha-tw-ubuntu
 maiha-aw-ubuntu
+maiha-ma-ubuntu
+maiha-ma-db-ubuntu
+#tasaki-dev1-ubuntu
 
 [ubuntu:vars]
 ansible_ssh_user=ubuntu

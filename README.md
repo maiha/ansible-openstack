@@ -8,7 +8,13 @@ OpenStack(ubuntu-16.04)にdocker等を入れていい感じにするansible
 
 - ホスト名のみ変更する
 
-2. 実行
+2. ssh疎通確認
+
+```shell
+make test
+```
+
+3. 実行
 
 ```shell
 make deploy
