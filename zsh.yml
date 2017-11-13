@@ -1,0 +1,21 @@
+---
+# [目的]
+#   ubuntuにzshを入れる
+# [条件]
+#   Ubuntu18.04
+
+- hosts: ubuntu
+  become: yes
+  gather_facts: False
+
+  tasks:
+    # updateはしない（リストを更新されたくない）
+    - name: zshをインストール
+      apt:
+        name: zsh
+        state: present
+    - name: rcファイルをコピー
+      copy:
+        src: .zshrc
+        dest: "/home/{{deploy_user}}/.zshrc"
+        mode: 0644

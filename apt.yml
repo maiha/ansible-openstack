@@ -16,7 +16,7 @@
       raw:  apt-get update && apt-get upgrade -y
 
     - name: apt-get install packages...
-      raw:  apt-get install aptitude tig jq lv htop zstd git nodejs -y
+      raw:  apt-get install aptitude tig jq lv htop zstd git make nodejs -y
 
     - name: apt-get install misc for bootstrap
       raw: apt-get install apt-transport-https ca-certificates curl software-properties-common -y
