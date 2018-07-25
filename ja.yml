@@ -15,3 +15,7 @@
 
     - name: locale-gen ja_JP.UTF-8
       raw:  locale-gen ja_JP.UTF-8
+
+    # https://sicklylife.hatenablog.com/entry/2016/02/03/201557
+    - name: use ntp.nict.jp for ntp server
+      raw:  sed -i 's/#NTP=/NTP=ntp.nict.jp/g' /etc/systemd/timesyncd.conf

@@ -20,4 +20,3 @@
 
     - name: remove ed nano
       raw:  apt-get remove ed nano -y
-
