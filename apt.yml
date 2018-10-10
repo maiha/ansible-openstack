@@ -16,7 +16,7 @@
       raw:  apt-get update && apt-get upgrade -y
 
     - name: apt-get install packages...
-      raw:  apt-get install aptitude tig jq lv htop git nodejs -y
+      raw:  apt-get install aptitude tig jq lv htop zstd git nodejs -y
 
     - name: remove ed nano
       raw:  apt-get remove ed nano -y
