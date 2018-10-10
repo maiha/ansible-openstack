@@ -6,6 +6,8 @@ maiha-aw-ubuntu
 maiha-ma-ubuntu
 maiha-ma-db-ubuntu
 cto-adebis-report
+cto-clickhouse
+cto-postgres
 #tasaki-dev1-ubuntu
 
 [ubuntu:vars]
