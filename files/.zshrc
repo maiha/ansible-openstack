@@ -38,6 +38,7 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 ### Overwritten by Supership
 
+export LANG=ja_JP.UTF-8
 export PS1="%B%F{green}%n@%m%f:%B%F{blue}%~%f%b$ "
 
 export DIRSTACKSIZE=100
