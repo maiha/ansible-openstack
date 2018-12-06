@@ -9,5 +9,8 @@ deploy:
 	ansible-playbook -i hosts/${ENV} apt.yml
 	ansible-playbook -i hosts/${ENV} zsh.yml
 
+zsh:
+	ansible-playbook -i hosts/${ENV} zsh.yml
+
 test:
 	ansible -i hosts/${ENV} all -a "hostname -i" -o

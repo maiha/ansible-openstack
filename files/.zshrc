@@ -10,14 +10,15 @@ setopt histignorealldups sharehistory
 bindkey -e
 
 # Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
-HISTSIZE=10000
-SAVEHIST=10000
-HISTFILE=~/.zsh_history
+HISTSIZE=100000
+SAVEHIST=100000
+HISTFILE=~/.zhistory
 
 # Use modern completion system
 autoload -Uz compinit
 compinit
 
+zstyle ':prezto:module:utility' safe-ops 'no'
 zstyle ':completion:*' auto-description 'specify: %d'
 zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' format 'Completing %d'
@@ -40,12 +41,15 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 export LANG=ja_JP.UTF-8
 
-case ${UID} in
-'0')
-  export PS1="%B%F{red}%n@%m%f:%B%F{blue}%~%f%b$ "
+case ${USERNAME} in
+'root')
+  export PS1="%B%F{red}%n%f%F{yellow}@%m%f:%B%F{blue}%~%f%b$ "
+  ;;
+'ubuntu')
+  export PS1="%B%F{yellow}%n@%m%f:%B%F{blue}%~%f%b$ "
   ;;
 *)
-  export PS1="%B%F{green}%n@%m%f:%B%F{blue}%~%f%b$ "
+  export PS1="%B%F{green}%n%f%F{yellow}@%m%f:%B%F{blue}%~%f%b$ "
   ;;
 esac
 
@@ -77,6 +81,7 @@ alias f='find . -name '
 alias l='lv'
 alias la='ls -a'
 alias ll='ls -lh'
+alias lla='ll -a'
 alias ls='ls --group-directories-first --color=auto'
 alias pd='popd'
 alias remove-ansi-color='sed -r "s:\x1B\[[0-9;]*[mK]::g"'
