@@ -2,7 +2,7 @@
 # [目的]
 #   ubuntuにdocker周りを入れる (OpenStack版)
 # [条件]
-#   Ubuntu16.04
+#   Ubuntu18.04
 
 - hosts: ubuntu
   serial: 1                     # エラーは致命的なので1台ずつ
@@ -26,17 +26,8 @@
     # storage-driverとproxyの設定 (systemdのoverride)
     #
     # /etc/systemd/system/docker.service.d/override.conf:
-    # ----------------------------------------------------------------------
-    # [Service]
-    # ExecStart=
-    # ExecStart=/usr/bin/dockerd -H fd:// -s overlay2 --bip=172.16.0.1/24 --fixed-cidr=172.16.128.128/24
-    # Environment='HTTP_PROXY=http://172.16.128.1:8080'
-    # ----------------------------------------------------------------------
     - name: create docker setting directory
       raw: mkdir -p /etc/systemd/system/docker.service.d/
-
-    - name: put docker setting into override.conf
-      raw: echo "[Service]\nExecStart=\nExecStart=/usr/bin/dockerd -H fd:// -s overlay2 --bip=172.16.0.1/24 --fixed-cidr=172.16.128.128/24\n"> /etc/systemd/system/docker.service.d/override.conf
 
     - name: update package for docker
       raw: apt-get update
@@ -51,5 +42,5 @@
       raw: usermod -aG docker ubuntu
 
     - name: install docker-compose
-      raw: "[ ! -x /usr/local/bin/docker-compose ] && curl -L https://github.com/docker/compose/releases/download/1.15.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose || true"
+      raw: "[ ! -x /usr/local/bin/docker-compose ] && curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose || true"
 
