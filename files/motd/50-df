@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# show disk usages with colorized progress bar by 'dbar'
+
+echo "Filesystem"
+for x in / /data; do \
+  df -h $x | grep -oP '(\d+)%' | cut -d'%' -f1 | dbar -nonl | sed -e "s/\\([\\=]\\+\\)/\x1B\[1;32m\\1\x1B\[0m/";\
+  df -h --output=size,target $x | sed 1d;\
+done
