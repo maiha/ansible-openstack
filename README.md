@@ -30,3 +30,15 @@ ansible-playbook -i hosts/dev ja.yml
 ansible-playbook -i hosts/dev apt.yml
 ansible-playbook -i hosts/dev zsh.yml
 ```
+
+## CentOS7
+
+### ulimit
+
+```console
+$ echo 'fs.file-max = 100000' > /etc/sysctl.d/60-file-max.conf
+$ vi /etc/security/limits.d/10-nofile.conf
+*    soft    nofile 1000000
+*    hard    nofile 1000000
+```
+
