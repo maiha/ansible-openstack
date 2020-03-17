@@ -4,10 +4,10 @@ all:
 	echo ${ENV}
 
 deploy:
-	ansible-playbook -i hosts/${ENV} docker-openstack.yml
-	ansible-playbook -i hosts/${ENV} ja.yml
-	ansible-playbook -i hosts/${ENV} apt.yml
-	ansible-playbook -i hosts/${ENV} zsh.yml
+	ansible-playbook -i hosts/${ENV} $(O) docker-openstack.yml
+	ansible-playbook -i hosts/${ENV} $(O) ja.yml
+	ansible-playbook -i hosts/${ENV} $(O) apt.yml
+	ansible-playbook -i hosts/${ENV} $(O) zsh.yml
 
 zsh:
 	ansible-playbook -i hosts/${ENV} zsh.yml
