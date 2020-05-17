@@ -8,6 +8,8 @@
   serial: 1                     # エラーは致命的なので1台ずつ
   become: yes
   gather_facts: False
+  vars:
+    - docker_compose_version: "1.25.5"
 
   tasks:
     ######################################################################
@@ -42,5 +44,5 @@
       raw: usermod -aG docker ubuntu
 
     - name: install docker-compose
-      raw: "[ ! -x /usr/local/bin/docker-compose ] && curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose || true"
+      raw: "[ ! -x /usr/local/bin/docker-compose ] && curl -L https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose || true"
 
