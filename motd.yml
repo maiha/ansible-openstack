@@ -9,19 +9,16 @@
   gather_facts: False
 
   tasks:
+    - name: apt install dbar
+      apt: name=dbar state=present
+
     - name: disable all
       shell: chmod -x /etc/update-motd.d/*
 
-    - name: show information of package and reboot
-      shell: chmod +x /etc/update-motd.d/90-updates-available /etc/update-motd.d/98-reboot-required
+    - name: enable 90-updates-available
+      shell: chmod +x /etc/update-motd.d/90-updates-available
 
-    - name: apt install dbar
-      apt:
-        name: dbar
-        state: present
-
-    - name: put 50-df
-      copy:
-        src: motd/50-df
-        dest: /etc/update-motd.d/50-df
-        mode: 0755
+    - name: put /etc/update-motd.d/*
+      copy: src="{{item}}" dest="/etc/update-motd.d/{{item | basename}}" mode=0755
+      with_fileglob:
+        - "motd/*"

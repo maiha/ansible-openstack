@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# [original]
+# ```
+# *** System restart required ***
+# ```
+#
+# [this]
+# ```
+# *** System restart required ***
+#   linux-image-5.4.0-31-generic,linux-base
+# ```
+
+# [original] /usr/lib/update-notifier/update-motd-reboot-required
+if [ -f /var/run/reboot-required ]; then
+  cat /var/run/reboot-required
+fi
+
+# Show pkg names too
+if grep -q '.' /var/run/reboot-required.pkgs > /dev/null 2>/dev/null; then
+  printf "  "
+  head -3 /var/run/reboot-required.pkgs | paste -sd "," -
+fi
