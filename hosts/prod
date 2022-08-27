@@ -1,8 +1,4 @@
 [ubuntu]
-cto-clickhouse
-cto-postgres
-cto-sso-auth
-cto-hue
 
 [ubuntu:vars]
 ansible_ssh_user=ubuntu

@@ -1,0 +1,25 @@
+---
+# [目的]
+#   ubuntuの初期設定
+# [条件]
+#   ubuntu-22.04.1
+
+# https://server-network-note.net/2022/07/docker-ubuntu2204-install/
+
+- hosts: ubuntu
+  become: yes
+  gather_facts: False
+
+  tasks:
+    - name: "タイムゾーンを日本時間(JST)に変更"
+      raw:  timedatectl set-timezone Asia/Tokyo
+
+    - name: "日本語関連パッケージのインストール"
+      raw:  apt -y install language-pack-ja-base language-pack-ja
+
+    - name: "システムのロケールを日本語(UTF-8)に変更"
+      raw:  localectl set-locale LANG=ja_JP.UTF-8 LANGUAGE="ja_JP:ja"
+
+    # https://sicklylife.hatenablog.com/entry/2016/02/03/201557
+    - name: use ntp.nict.jp for ntp server
+      raw:  sed -i 's/#NTP=/NTP=ntp.nict.jp/g' /etc/systemd/timesyncd.conf

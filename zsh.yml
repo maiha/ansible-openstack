@@ -2,7 +2,7 @@
 # [目的]
 #   ubuntuにzshを入れる
 # [条件]
-#   Ubuntu18.04
+#   ubuntu-22.04.1
 
 - hosts: ubuntu
   become: yes
@@ -14,8 +14,13 @@
       apt:
         name: zsh
         state: present
-    - name: rcファイルをコピー
+    - name: rcファイルをコピー({{deploy_user}})
       copy:
         src: .zshrc
         dest: "/home/{{deploy_user}}/.zshrc"
+        mode: 0644
+    - name: rcファイルをコピー(root)
+      copy:
+        src: .zshrc
+        dest: "/root/.zshrc"
         mode: 0644

@@ -1,33 +1,24 @@
 # ansible-openstack
 
 OpenStack(ubuntu)にdocker等を入れていい感じにするansible
-- playbook毎に想定する16.04,18.04があるので注意
-- 環境: `dev`, `prod`
+* ubuntu-22.04.01
 
-# usage
+## usage
 
-1. `hosts/xxx` の修正
+1. `hosts/xxx` を準備
 
-- 環境に応じてホスト名のみ変更する
+- prod をコピーして自分の環境のホスト名を入れる
 
-2. ssh疎通確認
+2. 実行
 
-```shell
-make test ENV=dev
-```
+最初のaptだけは confirm が入るので中のコマンドを手で実行した方がいい
 
-3. 実行
 
 ```shell
-make deploy ENV=dev
-```
-
-以下と同じ
-
-```shell
-ansible-playbook -i hosts/dev docker-openstack.yml -l cto-clickhouse --check
-ansible-playbook -i hosts/dev ja.yml
-ansible-playbook -i hosts/dev apt.yml
+#ansible-playbook -i hosts/dev apt.yml
+ansible-playbook -i hosts/dev bootstrap.yml
+ansible-playbook -i hosts/dev docker.yml
+ansible-playbook -i hosts/dev motd.yml
 ansible-playbook -i hosts/dev zsh.yml
 ```
 

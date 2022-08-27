@@ -2,7 +2,7 @@
 # [目的]
 #   ubuntuにmotdを入れる
 # [条件]
-#   Ubuntu18.04
+#   ubuntu-22.04.1
 
 - hosts: ubuntu
   become: yes
