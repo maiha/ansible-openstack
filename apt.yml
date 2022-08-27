@@ -2,24 +2,21 @@
 # [目的]
 #   ubuntuにパッケージを色々入れる
 # [条件]
-#   Ubuntu16.04
+#   ubuntu-22.04.1
 
 - hosts: ubuntu
   become: yes
   gather_facts: False
 
   tasks:
-    - name: add-apt-repository ppa:git-core/ppa -y
-      raw:  add-apt-repository ppa:git-core/ppa -y
+    - name: Update system repositories
+      raw:  apt update && apt upgrade -y
 
-    - name: apt-get update && apt-get upgrade -y
-      raw:  apt-get update && apt-get upgrade -y
+    - name: Install essential packages
+      raw:  apt install apt-transport-https ca-certificates curl software-properties-common -y
 
-    - name: apt-get install packages...
-      raw:  apt-get install aptitude tig jq lv htop zstd git make nodejs -y
+    - name: Install useful packages
+      raw:  apt install tig jq lv make net-tools -y
 
-    - name: apt-get install misc for bootstrap
-      raw: apt-get install apt-transport-https ca-certificates curl software-properties-common -y
-
-    - name: remove ed nano
-      raw:  apt-get remove ed nano -y
+    - name: Remove noisy old apps
+      raw:  apt remove ed nano -y

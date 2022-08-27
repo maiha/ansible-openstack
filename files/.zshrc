@@ -76,7 +76,7 @@ bindkey '^n' history-beginning-search-forward
 alias c='crystal'
 alias cx='chmod +x'
 alias d='docker'
-alias dc='docker-compose'
+alias dc='docker compose'
 alias f='find . -name '
 alias l='lv -c'
 alias la='ls -a'

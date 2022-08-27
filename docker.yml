@@ -1,0 +1,44 @@
+---
+# [目的]
+#   ubuntuにdockeを入れる
+# [条件]
+#   ubuntu-22.04.1
+
+# https://nextgentips.com/2022/05/06/how-to-install-docker-compose-v2-on-ubuntu-22-04/
+
+- hosts: ubuntu
+  serial: 1                     # エラーは致命的なので1台ずつ
+  become: yes
+  gather_facts: False
+  vars:
+    - docker_compose_version: "1.25.5"
+
+  tasks:
+    ######################################################################
+    ### Docker
+
+    # キーの追加 [冪等]
+    - name: add key via proxy
+      raw:  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+    # repository追加
+    - name: Create /etc/apt/sources.list.d/docker.list
+      raw:  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    # storage-driverとproxyの設定 (systemdのoverride)
+    #
+    # /etc/systemd/system/docker.service.d/override.conf:
+    # - name: create docker setting directory
+    #  raw: mkdir -p /etc/systemd/system/docker.service.d/
+
+    - name: system update once more to refresh our repositories
+      raw:  apt update
+
+    - name: Installing Docker
+      raw:  apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+
+    - name: restart systemd docker
+      raw:  systemctl daemon-reload && systemctl restart docker
+
+    - name: add user to docker group
+      raw:  usermod -aG docker ubuntu
