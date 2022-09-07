@@ -1,0 +1,35 @@
+---
+# [目的]
+#   /var/lib/docker を /data/docker/data に移動する
+# [条件]
+#   ubuntu-22.04.1
+#   初回実行のみ (2回目はエラー)
+
+- hosts: ubuntu
+  become: yes
+  gather_facts: False
+  vars:
+    data_dir: "{{docker_root}}/data" 
+
+  tasks:
+    - name: "変数確認: docker_root # {{docker_root}}"
+      fail:
+        msg: "変数がありません: docker_root"
+      when: docker_root|length == 0
+
+    - name: "data_dirはない(存在すればエラー終了) # {{data_dir}}"
+      raw: "test ! -d '{{data_dir}}'"
+
+    - name: "dockerサービスを停止"
+      raw: "systemctl stop docker"
+
+    - name: "/var/lib/dockerをコピー # {{data_dir}}"
+      shell:
+        cmd: |
+          mkdir -p '{{docker_root}}'
+          cp -ar /var/lib/docker '{{data_dir}}'
+          mv /var/lib/docker /var/lib/docker.moved
+          (cd /var/lib && ln -s '{{data_dir}}' docker)
+
+    - name: "dockerサービスを起動"
+      raw: "systemctl start docker"

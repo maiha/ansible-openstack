@@ -22,6 +22,29 @@ ansible-playbook -i hosts/dev motd.yml
 ansible-playbook -i hosts/dev zsh.yml
 ```
 
+## その他
+
+### dockerのdataディレクトリを変更
+
+`/` は溢れるので、別マウント(`/data`)とかに、既存データを含めて移動させたい場合
+
+```console
+# 移動させるホスト(foo)の変数で `docker_root` を指定
+$ vi host_vars/foo.yml
+docker_root: "/data/docker"
+
+# docker-migrate-dir.yml プレイブックを実行
+$ ansible-playbook docker-migrate-dir.yml -l foo
+
+# ホストfooのディレクトリが以下のようになる
+$ ls -ld /var/lib/docker*
+lrwxrwxrwx  1 root root   17  9月  7 19:01 /var/lib/docker -> /data/docker/data
+drwx--x--- 13 root root 4096  9月  7 16:13 /var/lib/docker.moved                # 元データ
+
+$ ls -ld /data/docker/data
+drwx--x--- 13 root root 4096  9月  7 19:01 /data/docker/data                    # 新しいdir
+```
+
 ## CentOS7
 
 ### ulimit
