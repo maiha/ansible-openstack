@@ -40,18 +40,21 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 ### Overwritten by Supership
 
 export LANG=ja_JP.UTF-8
+export SHELL=/bin/zsh
 
+PS_HOST_COLOR={{zsh_ps_host_color}}
 case ${USERNAME} in
 'root')
-  export PS1="%B%F{red}%n%f%F{yellow}@%m%f:%B%F{blue}%~%f%b$ "
+  PS_USER_COLOR=red
   ;;
 'ubuntu')
-  export PS1="%B%F{yellow}%n@%m%f:%B%F{blue}%~%f%b$ "
+  PS_USER_COLOR=yellow
   ;;
 *)
-  export PS1="%B%F{green}%n%f%F{yellow}@%m%f:%B%F{blue}%~%f%b$ "
+  PS_USER_COLOR=green
   ;;
 esac
+export PS1="%B%F{${PS_USER_COLOR}}%n%f%F{${PS_HOST_COLOR}}@%m%f:%B%F{blue}%~%f%b$ "
 
 export DIRSTACKSIZE=100
 export HISTSIZE=10000
