@@ -2,7 +2,8 @@
 # show disk usages with colorized progress bar by 'dbar'
 
 echo "Filesystem"
-for x in / /data; do \
-  df -h $x | grep -oP '(\d+)%' | cut -d'%' -f1 | dbar -nonl | sed -e "s/\\([\\=]\\+\\)/\x1B\[1;32m\\1\x1B\[0m/";\
-  df -h --output=size,target $x | sed 1d;\
+LC_ALL=C
+for x in `df --output=target,source | grep '/dev/vd.1$' | cut -d' ' -f1`; do 
+  df -h $x | grep -oP '(\d+)%' | cut -d'%' -f1 | dbar -nonl | sed -e "s/\\([\\=]\\+\\)/\x1B\[1;32m\\1\x1B\[0m/";
+  df -h --output=size,target $x | sed 1d;
 done
