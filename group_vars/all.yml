@@ -5,5 +5,9 @@
 deploy_user: "ubuntu"
 deploy_group: "ubuntu"
 
-### zsh.yml
+### zsh
+zsh_etc_dir: "/etc/mkt/zsh"
+zsh_users:
+  - root
+  - ubuntu
 zsh_ps_host_color: "yellow"

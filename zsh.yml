@@ -7,24 +7,51 @@
 - hosts: ubuntu
   become: yes
   gather_facts: False
+  vars:
+    src_dir: "files/zsh/"
+    etc_dir: "{{ zsh_etc_dir }}"
 
   tasks:
     # updateはしない（リストを更新されたくない）
-    - name: zshをインストール
+    - name: "zshをインストール"
       apt:
         name: zsh
         state: present
-    - name: rcファイルをコピー({{deploy_user}})
-      template:
-        src: .zshrc.j2
-        dest: "/home/{{deploy_user}}/.zshrc"
-        owner: "{{deploy_user}}"
-        group: "{{deploy_user}}"
-        mode: 0644
-    - name: rcファイルをコピー(root)
-      template:
-        src: .zshrc.j2
-        dest: "/root/.zshrc"
-        mode: 0644
-    - name: chsh({{deploy_user}})
+
+    - name: "chsh({{ deploy_user }})"
       raw: chsh -s /bin/zsh {{deploy_user}}
+
+    # /etc/mkt/zsh/ 以下に設定ファイルをコピー
+    - name: "zsh: Create directories"
+      file:
+        path: '{{ etc_dir }}/{{ item.path }}'
+        state: directory
+        mode: '{{ item.mode }}'
+      with_filetree: "{{ src_dir }}"
+      when: item.state == 'directory'
+
+    - name: "zsh: Template files"
+      template:
+        src: '{{ item.src }}'
+        dest: '{{ etc_dir }}/{{ item.path | regex_replace("\.j2$", "") }}'
+        mode: '{{ item.mode }}'
+      with_filetree: "{{ src_dir }}"
+      when: item.state == 'file'
+
+    - name: "zsh: Recreate symlinks"
+      file:
+        src: '{{ item.src }}'
+        dest: '{{ etc_dir }}/{{ item.path }}'
+        state: link
+        force: yes
+        mode: '{{ item.mode }}'
+      with_filetree: "{{ src_dir }}"
+      when: item.state == 'link'
+      
+    # /etc/mkt/zsh/ 以下の設定ファイルをユーザにインストール (var:zsh_users)
+    - name: "zsh: install users"
+      shell: |
+        if id "{{ item }}" &>/dev/null; then
+          sudo -u "{{ item }}" -i sh -c '{{ etc_dir }}/bin/update'
+        fi
+      with_items: "{{ zsh_users }}"
