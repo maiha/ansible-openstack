@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<clickhouse>
+    <users>
+        <!-- Example of user with readonly access. -->
+        <readonly>
+            <password></password>
+            <networks incl="networks" replace="replace">
+                <ip>::1</ip>
+                <ip>127.0.0.1</ip>
+                <ip>172.23.38.0/24</ip> <!-- mkt-common -->
+            </networks>
+            <profile>readonly</profile>
+            <quota>default</quota>
+        </readonly>
+    </users>
+</clickhouse>

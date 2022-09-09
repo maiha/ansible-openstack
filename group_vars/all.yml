@@ -5,9 +5,14 @@
 deploy_user: "ubuntu"
 deploy_group: "ubuntu"
 
+### clickhouse
+clickhouse_version: "22.8.4.7"
+clickhouse_max_memory_usage: "30000000000"
+
 ### zsh
 zsh_etc_dir: "/etc/mkt/zsh"
 zsh_users:
   - root
   - ubuntu
 zsh_ps_host_color: "yellow"
+

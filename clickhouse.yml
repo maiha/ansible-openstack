@@ -1,0 +1,50 @@
+---
+# [目的]
+#   ubuntuにclickhouseを入れる
+# [条件]
+#   ubuntu-22.04.1
+
+# https://clickhouse.com/docs/en/getting-started/install/
+
+- hosts: clickhouse
+  serial: 1                     # エラーは致命的なので1台ずつ
+  become: yes
+  gather_facts: False
+  vars:
+    version: "{{ clickhouse_version }}"
+    src_dir: "files/clickhouse/"
+    etc_dir: "/etc/clickhouse-server"
+
+  tasks:
+    ######################################################################
+    ### ClickHouse
+    - name: apt-get install -y apt-transport-https ca-certificates dirmngr
+      command: apt-get install -y apt-transport-https ca-certificates dirmngr
+
+    - name: apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 8919F6BD2B48D754
+      command: apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 8919F6BD2B48D754
+
+    - name: add sources.list
+      shell: echo "deb https://packages.clickhouse.com/deb stable main" > /etc/apt/sources.list.d/clickhouse.list
+
+    - name: apt-get update
+      command: apt-get update
+
+    - name: "install clickhouse # {{ version }}"
+      shell: DEBIAN_FRONTEND=noninteractive apt-get install -y clickhouse-server={{ version }} clickhouse-client={{ version }} clickhouse-common-static={{ version }}
+
+    - name: "clickhouse: config files"
+      template:
+        src: '{{ item.src }}'
+        dest: '{{ etc_dir }}/{{ item.path | regex_replace("\.j2$", "") }}'
+        owner: 'clickhouse'
+        group: 'clickhouse'
+        mode: '400'
+      with_filetree: "{{ src_dir }}"
+      when: item.state == 'file'
+
+    - name: set clock tsc
+      shell: echo "tsc" > /sys/devices/system/clocksource/clocksource0/current_clocksource
+
+    - name: service clickhouse-server restart
+      command: service clickhouse-server restart
