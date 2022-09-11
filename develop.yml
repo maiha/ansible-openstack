@@ -1,0 +1,13 @@
+---
+# [目的]
+#   ubuntuに開発用ツールを色々入れる
+# [条件]
+#   ubuntu-22.04.1
+
+- hosts: ubuntu
+  become: yes
+  gather_facts: False
+
+  tasks:
+    - name: "gccとか基本的なもの"
+      command: apt install build-essential pkg-config libssl-dev -y
