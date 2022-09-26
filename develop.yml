@@ -11,3 +11,6 @@
   tasks:
     - name: "gccとか基本的なもの"
       command: apt install build-essential pkg-config libssl-dev -y
+
+    - name: "crystalのruntime"
+      shell:  DEBIAN_FRONTEND=noninteractive apt install libssl-dev libxml2-dev libyaml-dev libgmp-dev libz-dev libpcre3-dev libevent-dev -y
