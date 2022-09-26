@@ -58,6 +58,9 @@ case ${USERNAME} in
 esac
 export PS1="%B%F{${PS_USER_COLOR}}%n%f%F{${PS_HOST_COLOR}}@%m%f:%B%F{blue}%~%f%b$ "
 
+print_status() { [ $? -eq 0 ] || echo "zsh: exit $?" }
+precmd_functions+=(print_status)
+
 export DIRSTACKSIZE=100
 export HISTSIZE=10000
 export SAVEHIST=100000
