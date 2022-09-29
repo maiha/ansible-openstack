@@ -31,7 +31,10 @@
       command: apt-get update
 
     - name: "install clickhouse # {{ version }}"
-      shell: DEBIAN_FRONTEND=noninteractive apt-get install -y clickhouse-server={{ version }} clickhouse-client={{ version }} clickhouse-common-static={{ version }}
+      shell: DEBIAN_FRONTEND=noninteractive apt-get install clickhouse-server={{ version }} clickhouse-client={{ version }} clickhouse-common-static={{ version }} -y --allow-change-held-packages
+
+    - name: "apt-mark hold clickhouse-server"
+      command: apt-mark hold clickhouse-server
 
     - name: "clickhouse: config files"
       template:
