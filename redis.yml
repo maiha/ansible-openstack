@@ -1,0 +1,35 @@
+---
+# [目的]
+#   ubuntuにredisを入れる
+
+#- hosts: redis
+#  gather_facts: False
+  # rsyncを直接実行したいので `become` は全体指定しない
+  # `synchronize` モジュールは複雑なので使わない
+
+
+- hosts: ubuntu
+  become: yes
+  gather_facts: False
+
+  tasks:
+    - name: Install redis-cli
+      ansible.builtin.apt:
+        pkg:
+          - redis-tools
+
+- import_playbook: "deploy.yml"
+  vars:
+    ### deploy.yml
+    src: "files/redis"  # local: deploy元dir (trailiing '/' なし)
+    tmp: "package"      # local: 転送用中間dir (trailiing '/' なし)
+    dst: "{{ redis_dir }}"  # remote: deploy先dir (trailiing '/' なし)
+
+    ### defined in group_vars
+    # deploy_user
+    # deploy_group
+    # deploy_remote
+    # redis_docker_image
+    # redis_maxmemory
+    # redis_port
+    # redis_dir

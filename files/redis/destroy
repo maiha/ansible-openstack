@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -eu
+dir=$(dirname ${BASH_SOURCE:-$0})
+_olddir=$(pwd)
+
+cd $dir
+./stop
+docker compose down -v --remove-orphans
+./umount
+
+cd $_olddir
+

@@ -1,0 +1,105 @@
+---
+# [目的]
+#   汎用デプロイ
+# [使い方]
+# ```yaml
+# - import_playbook: "deploy.yml"
+#   vars:
+#     src: "files/redis"     # local: deploy元dir (trailiing '/' なし)
+#     tmp: "package"         # local: 転送用中間dir (trailiing '/' なし)
+#     dst: "/data/redis"     # remote: deploy先dir (trailiing '/' なし)
+#     deploy_user: "ubuntu"  # install to remote or not
+#     deploy_group: "ubuntu" # install to remote or not
+#     deploy_remote: true    # install to remote or not
+# ```
+
+- hosts: all
+  gather_facts: False
+  # rsyncを直接実行したいので `become` は全体指定しない
+  # `synchronize` モジュールは複雑なので使わない
+
+  vars:
+    rsync_rsh: "{% if deploy_remote %}--rsh=ssh{% endif %}"
+    rsync_dst: "{% if deploy_remote %}{{ deploy_user }}@{{ inventory_hostname }}:{% endif %}{{ dst }}"
+    rsync: "rsync -av {{rsync_rsh}} {{ tmp }}/. {{rsync_dst}}/"
+    start: "{{ dst }}/start"
+    stop: "{{ dst }}/stop"
+  
+  tasks:  
+    - name: "ローカル: `{{ src }}` を `{{ tmp }}` にコピー"
+      local_action: shell rm -rf '{{ tmp }}' && cp -prL '{{ src }}' '{{ tmp }}'
+
+    # 都合上まとめてコピーされてしまったテンプレートファイル群を削除
+    - name: "ローカル: `{{ tmp }}/**/*.j2` を削除"
+      local_action: command find "{{tmp}}/" -name "*.j2" -type f -delete
+
+    # テンプレート処理を実行
+    - name: "ローカル: `{{ src }}/**/*.j2` を展開"
+      local_action: template src="{{item.src}}" dest="{{tmp}}/{{item.path | regex_replace('\.j2$', '')}}" mode="preserve"
+      with_filetree: '{{ src }}/'
+      when:
+        - item.state == 'file'
+        - item.path is match(".*\.j2$")
+
+    # beforeフィルタ
+    - name: "ローカル: インストール前の作業"
+      local_action: shell bash -c "test ! -f '{{tmp}}/.deploy-before-local.sh' || '{{tmp}}/.deploy-before-local.sh'"
+
+    # 実行中のバイナリファイルを上書きできないため一旦止める
+    - name: "リモート: 既存サービスを停止"
+      shell: "[ -f {{ stop }} ] && {{ stop }}"
+      register: exit
+      failed_when: exit.rc not in [0, 1]
+      changed_when: exit.rc in [0]
+      become: "{{ deploy_remote }}"
+      become_user: "{{ deploy_user }}"
+
+    - name: "リモート: インストール先ディレクトリを作成"
+      file: >-
+        path={{ dst }}
+        state=directory
+        owner={{ deploy_user }}
+        group={{ deploy_group }}
+      become: "{{ deploy_remote }}"
+      when: deploy_remote
+
+    - name: "リモート: インストール先ディレクトリを作成(localの場合)"
+      shell: "mkdir -p '{{ dst }}'"
+      when: deploy_remote == false
+
+    - name: "リモート: `package` をサーバに転送"
+      local_action: command {{ rsync }}
+
+    - name: "リモート: インストール前の作業(root)"
+      shell: "test ! -f .deploy-before-remote-root.sh || bash .deploy-before-remote-root.sh"
+      become: "{{ deploy_remote }}"
+      args:
+        chdir: "{{ dst }}"
+
+    - name: "リモート: インストール前の作業(user)"
+      shell: "test ! -f .deploy-before-remote-user.sh || bash .deploy-before-remote-user.sh"
+      become: "{{ deploy_remote }}"
+      become_user: "{{ deploy_user }}"
+      args:
+        chdir: "{{ dst }}"
+
+    - name: "リモート: サービスを起動"
+      shell: "[ -f {{ start }} ] && {{ start }}"
+      register: exit
+      failed_when: exit.rc not in [0, 1]
+      changed_when: exit.rc in [0]
+      become: "{{ deploy_remote }}"
+      become_user: "{{ deploy_user }}"
+
+    - name: "リモート: サービス起動後の作業(root)"
+      shell: "test ! -f .deploy-after-remote-root.sh || bash .deploy-after-remote-root.sh"
+      become: "{{ deploy_remote }}"
+      args:
+        chdir: "{{ dst }}"
+
+    - name: "リモート: サービス起動後の作業(user)"
+      shell: "test ! -f .deploy-after-remote-user.sh || bash .deploy-after-remote-user.sh"
+      become: "{{ deploy_remote }}"
+      become_user: "{{ deploy_user }}"
+      args:
+        chdir: "{{ dst }}"

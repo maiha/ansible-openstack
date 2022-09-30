@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -eu
+dir=$(dirname ${BASH_SOURCE:-$0})
+name=$(basename $(readlink -f $dir))
+
+# コンテナがなければエラー
+if [ -z $(docker ps -f name=${name} -q -a) ] ; then
+  echo "Docker ${name} not found" 2>&1
+  exit 1
+fi
+
+if [ $# -lt 1 ] ; then
+    (cd $dir && exec docker exec -it $name sh)
+else
+    (cd $dir && exec docker exec -it $name "$@")
+fi

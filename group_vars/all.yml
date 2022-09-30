@@ -1,13 +1,21 @@
 ---
 ### ------------------------------------------------------------
-### deploy変数
+### "deploy.yml" 用変数
 ### ------------------------------------------------------------
 deploy_user: "ubuntu"
 deploy_group: "ubuntu"
+deploy_remote: true
 
 ### clickhouse
 clickhouse_version: "22.9.2.7"
 clickhouse_max_memory_usage: "30000000000"
+
+### redis
+# https://hub.docker.com/_/redis/tags
+redis_docker_image: "redis:7.0.5-alpine"
+redis_maxmemory: "2GB"
+redis_port: 6379
+redis_dir: "/data/redis"
 
 ### zsh
 zsh_etc_dir: "/etc/mkt/zsh"

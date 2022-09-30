@@ -1,0 +1,16 @@
+version: "3"
+services:
+  redis:
+    container_name: redis
+    image: {{ redis_docker_image }}
+    ports:
+      - "{{ redis_port }}:{{ redis_port }}"
+    network_mode: "host"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - $PWD/v:/data
+    working_dir: "/data"
+    command: "redis-server redis.conf"
+    restart: unless-stopped
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin

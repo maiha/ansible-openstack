@@ -1,0 +1,36 @@
+######################################################################
+### Default Settings
+
+# core
+dir /data
+logfile "redis.log"
+unixsocket redis.sock
+unixsocketperm 770
+
+# memory
+maxmemory {{ redis_maxmemory }}
+
+# failover
+timeout 300
+repl-timeout 300
+tcp-keepalive 60
+
+# backup (rdb)
+rdbcompression yes
+rdbchecksum yes
+dbfilename dump.rdb
+stop-writes-on-bgsave-error yes
+rdbchecksum yes
+save 3600 1000
+
+# backup (aof)
+appendonly yes
+appendfilename dump.aof
+appendfsync everysec
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+
+######################################################################
+### Runtime Settings
+port {{ redis_port }}

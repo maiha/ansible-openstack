@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -eu
+dir=$(dirname ${BASH_SOURCE:-$0})
+_olddir=$(pwd)
+
+cd $dir
+mkdir -p v
+cp -p redis.conf v/
+docker compose up -d
+
+cd $_olddir

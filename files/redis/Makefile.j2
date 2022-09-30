@@ -1,0 +1,17 @@
+
+SRC := v
+DST := {{ redis_dir }}/backup
+YMD := $(shell date +'%Y%m%d')
+
+.PHONY : backup
+backup:
+	@mkdir -p "$(DST)"
+	@if [ ! -d $(SRC) ]; then echo "No src dirs: $(SRC)"; exit 1; fi
+	@if [ ! -d $(DST) ]; then echo "No dst dirs: $(DST)"; exit 1; fi
+	tar zcvpf $(DST)/redis-v-$(YMD).tar.gz --exclude '*.log' --exclude '*.sock' $(SRC)
+
+.PHONY : sweep
+SWEEP_MONTHS=3
+_SWEEP_YM=$(shell date -d "$(SWEEP_MONTHS) months ago" +%Y%m)
+sweep:
+	redis-cli keys '*' | grep "/$(_SWEEP_YM)" | sort | sed -e 's/^/del /' | redis-cli

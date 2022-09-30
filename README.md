@@ -22,6 +22,13 @@ ansible-playbook -i hosts/dev motd.yml
 ansible-playbook -i hosts/dev zsh.yml
 ```
 
+3. services
+
+ホストを指定して実行
+```shell
+ansible-playbook -i hosts/dev redis.yml -l foo
+```
+
 ## その他
 
 ### dockerのdataディレクトリを変更

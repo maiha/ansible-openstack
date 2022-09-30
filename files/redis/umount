@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -eu
+dir=$(dirname ${BASH_SOURCE:-$0})
+(cd $dir && docker run --rm -t -v $(pwd)/v:/mnt alpine chown -R $(id -u):$(id -g) /mnt)
