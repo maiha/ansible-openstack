@@ -16,7 +16,7 @@
       raw:  apt install apt-transport-https ca-certificates curl software-properties-common -y
 
     - name: Install useful packages
-      raw:  apt install tig jq lv make net-tools tree -y
+      raw:  apt install tig jq lv make net-tools tree moreutils -y
 
     - name: Remove noisy old apps
       raw:  apt remove ed nano -y
